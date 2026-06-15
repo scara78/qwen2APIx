@@ -13,13 +13,13 @@ import {
 import { useState } from "react"
 
 const navItems = [
-  { name: "运行状态", path: "/", icon: LayoutDashboard },
-  { name: "账号管理", path: "/accounts", icon: Activity },
+  { name: "Stare sistem", path: "/", icon: LayoutDashboard },
+  { name: "Conturi", path: "/accounts", icon: Activity },
   { name: "API Key", path: "/tokens", icon: Key },
-  { name: "接口测试", path: "/test", icon: MessageSquare },
-  { name: "图片生成", path: "/images", icon: Image },
-  { name: "视频生成", path: "/videos", icon: Video },
-  { name: "系统设置", path: "/settings", icon: Settings },
+  { name: "Test interfață", path: "/test", icon: MessageSquare },
+  { name: "Generare imagini", path: "/images", icon: Image },
+  { name: "Generare video", path: "/videos", icon: Video },
+  { name: "Setări sistem", path: "/settings", icon: Settings },
 ]
 
 export default function AdminLayout() {
@@ -52,7 +52,7 @@ export default function AdminLayout() {
             type="button"
             className="rounded-full border border-white/70 bg-card/70 p-2 text-muted-foreground shadow-sm md:hidden"
             onClick={() => setMobileOpen(false)}
-            aria-label="关闭导航"
+            aria-label="Închide navigarea"
           >
             <X className="size-5" />
           </button>
@@ -89,10 +89,10 @@ export default function AdminLayout() {
           <div className="rounded-[24px] border border-white/70 bg-muted/22 p-4 shadow-sm">
             <div className="flex items-center gap-2 text-xs font-black text-muted-foreground">
               <span className="size-2 rounded-full bg-accent" />
-              Go 后端运行
+              Backend Go activ
             </div>
             <div className="mt-2 text-sm leading-6 text-muted-foreground">
-              保持原版管理入口，前端只展示必要页面。
+              Interfață de administrare simplificată, afișează doar paginile esențiale.
             </div>
           </div>
         </div>
@@ -105,7 +105,7 @@ export default function AdminLayout() {
               type="button"
               className="rounded-full border border-white/70 bg-card/70 p-2 text-muted-foreground shadow-sm md:hidden"
               onClick={() => setMobileOpen(true)}
-              aria-label="打开导航"
+              aria-label="Deschide navigarea"
             >
               <Menu className="size-5" />
             </button>
