@@ -28,12 +28,12 @@ export type ModelGroup = {
 
 export const FALLBACK_CHAT_MODELS: ModelOption[] = [
   { id: "qwen3.6-plus", base_model: "qwen3.6-plus", family: "qwen3.6", mode: "chat", display_name: "qwen3.6-plus", capabilities: {} },
-  { id: "qwen3.6-plus-thinking", base_model: "qwen3.6-plus", family: "qwen3.6", mode: "thinking", display_name: "qwen3.6-plus thinking", capabilities: { thinking: true } },
-  { id: "qwen3.6-plus-search", base_model: "qwen3.6-plus", family: "qwen3.6", mode: "search", display_name: "qwen3.6-plus search", capabilities: { search: true } },
+  { id: "qwen3.6-plus-thinking", base_model: "qwen3.6-plus", family: "qwen3.6", mode: "thinking", display_name: "qwen3.6-plus gândire", capabilities: { thinking: true } },
+  { id: "qwen3.6-plus-search", base_model: "qwen3.6-plus", family: "qwen3.6", mode: "search", display_name: "qwen3.6-plus căutare", capabilities: { search: true } },
 ]
 
 export const FALLBACK_IMAGE_MODELS: ModelOption[] = [
-  { id: "qwen3.6-plus-image", base_model: "qwen3.6-plus", family: "qwen3.6", mode: "image", display_name: "qwen3.6-plus image", capabilities: { image_gen: true } },
+  { id: "qwen3.6-plus-image", base_model: "qwen3.6-plus", family: "qwen3.6", mode: "image", display_name: "qwen3.6-plus imagine", capabilities: { image_gen: true } },
 ]
 
 export const FALLBACK_VIDEO_MODELS: ModelOption[] = [
@@ -41,27 +41,27 @@ export const FALLBACK_VIDEO_MODELS: ModelOption[] = [
 ]
 
 export const CAPABILITY_LABELS: Array<{ key: keyof ModelCapability; label: string }> = [
-  { key: "thinking", label: "思考" },
-  { key: "search", label: "搜索" },
-  { key: "vision", label: "视觉" },
-  { key: "deep_research", label: "研究" },
-  { key: "image_gen", label: "图片" },
-  { key: "video_gen", label: "视频" },
-  { key: "web_dev", label: "建站" },
-  { key: "slides", label: "PPT" },
+  { key: "thinking", label: "Gândire" },
+  { key: "search", label: "Căutare" },
+  { key: "vision", label: "Viziune" },
+  { key: "deep_research", label: "Cercetare" },
+  { key: "image_gen", label: "Imagine" },
+  { key: "video_gen", label: "Video" },
+  { key: "web_dev", label: "Web" },
+  { key: "slides", label: "Prezentare" },
 ]
 
 const MODEL_MODE_SUFFIX_RE = /-(thinking|search|deep-research|deep_research|image|video|webdev|web-dev|slides|t2i|t2v)$/i
 const TEXT_TEST_MODES = new Set(["chat", "thinking", "search", "deep_research"])
 const GENERATION_MODES = new Set(["image", "video", "webdev", "slides"])
 const MODE_NAME_SUFFIX: Record<string, string> = {
-  thinking: "thinking",
-  search: "search",
-  deep_research: "deep_research",
-  image: "image",
+  thinking: "gândire",
+  search: "căutare",
+  deep_research: "cercetare",
+  image: "imagine",
   video: "video",
-  webdev: "webdev",
-  slides: "slides",
+  webdev: "web",
+  slides: "prezentare",
 }
 
 function asText(value: unknown): string {
@@ -149,7 +149,7 @@ export function filterTextTestModels(options: ModelOption[]): ModelOption[] {
       id: option.id.endsWith("-search") ? option.id : `${option.id}-search`,
       base_model: option.base_model || option.id,
       mode: "search",
-      display_name: `${option.display_name || option.id} search`,
+      display_name: `${option.display_name || option.id} căutare`,
       capabilities: { search: true },
     }))
     .filter(option => !existingIds.has(option.id))
@@ -167,7 +167,7 @@ export function filterImageModels(options: ModelOption[]): ModelOption[] {
       id: option.id.endsWith("-image") ? option.id : `${option.id}-image`,
       base_model: option.base_model || option.id,
       mode: "image",
-      display_name: `${option.display_name || option.id} image`,
+      display_name: `${option.display_name || option.id} imagine`,
       capabilities: { image_gen: true },
     }))
   return capable.length ? capable : FALLBACK_IMAGE_MODELS
@@ -212,14 +212,14 @@ export function groupModelOptions(options: ModelOption[]): ModelGroup[] {
 
 export function formatModeLabel(mode?: string): string {
   switch (mode) {
-    case "thinking": return "思考"
-    case "search": return "搜索"
-    case "deep_research": return "研究"
-    case "image": return "图片"
-    case "video": return "视频"
-    case "webdev": return "建站"
-    case "slides": return "PPT"
-    default: return "对话"
+    case "thinking": return "Gândire"
+    case "search": return "Căutare"
+    case "deep_research": return "Cercetare"
+    case "image": return "Imagine"
+    case "video": return "Video"
+    case "webdev": return "Web"
+    case "slides": return "Prezentare"
+    default: return "Conversație"
   }
 }
 

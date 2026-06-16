@@ -1,8 +1,9 @@
 /**
- * 规范化用户粘贴的管理凭证。
+ * Normalizează credențialele de administrare introduse de utilizator.
  *
- * 浏览器不能直接读取后端 data/api_keys.json；这里仅处理用户已经粘贴到
- * 控制台的值，避免把 "Bearer xxx"、Authorization 头或 JSON 片段原样保存。
+ * Browserul nu poate citi direct data/api_keys.json din backend; aici se procesează
+ * doar valorile pe care utilizatorul le-a lipit deja în consolă, evitând salvarea
+ * intactă a textelor "Bearer xxx", anteturilor Authorization sau fragmentelor JSON.
  */
 export function normalizeApiKey(input: string): string {
   let value = String(input || "").trim()
@@ -20,7 +21,7 @@ export function normalizeApiKey(input: string): string {
       }
     }
   } catch {
-    // 普通 key 文本不是 JSON，继续按 header/text 形式解析。
+    // Textul key obișnuit nu este JSON, continuă parsarea ca header/text.
   }
 
   value = value.replace(/^[\s"'`]+|[\s"'`,]+$/g, "").trim()
@@ -46,7 +47,7 @@ export function getStoredApiKey(): string {
     const stored = localStorage.getItem('qwen2api_key')
     if (stored && stored.trim()) return normalizeApiKey(stored)
   } catch {
-    // localStorage 不可用时返回空凭证，由服务端明确拒绝未授权请求。
+    // localStorage indisponibil → returnează credențial gol, serverul va respinge cererile neautorizate.
   }
   return normalizeApiKey((import.meta.env.VITE_DEFAULT_ADMIN_KEY as string | undefined) || '')
 }
@@ -74,15 +75,15 @@ export async function adminRequestErrorMessage(res: Response): Promise<string> {
     const data = await res.clone().json()
     detail = String(data.detail || data.error || data.message || "").trim()
   } catch {
-    // 非 JSON 错误响应只根据 HTTP 状态提示。
+    // Răspuns de eroare non-JSON; se bazează doar pe starea HTTP.
   }
 
   if (res.status === 401) {
-    return "未携带会话 Key：请到「系统设置」粘贴 ADMIN_KEY 或 data/api_keys.json 中已有 API Key"
+    return "Fără Key de sesiune: mergeți la „Setări sistem" pentru a lipi ADMIN_KEY sau un API Key din data/api_keys.json"
   }
   if (res.status === 403) {
-    return "会话 Key 不匹配：请确认粘贴的是当前 data/api_keys.json 中的完整 key，且不要带 Bearer 前缀"
+    return "Key de sesiune neconformă: confirmați că ați lipit key-ul complet din data/api_keys.json, fără prefixul Bearer"
   }
   if (detail) return detail
-  return `请求失败（HTTP ${res.status}）`
+  return `Cerere eșuată (HTTP ${res.status})`
 }

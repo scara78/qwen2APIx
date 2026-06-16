@@ -68,7 +68,7 @@ const endpointRows = [
   { icon: Globe, iconClass: "bg-amber-500/10 text-amber-700", path: "POST /v1beta/models/{model}:generateContent", tag: "Gemini", tagClass: "bg-amber-500/10 text-amber-700 ring-amber-500/20" },
   { icon: ImageIcon, iconClass: "bg-rose-500/10 text-rose-700", path: "POST /v1/images/generations", tag: "Imagine", tagClass: "bg-rose-500/10 text-rose-700 ring-rose-500/20" },
   { icon: Video, iconClass: "bg-orange-500/10 text-orange-700", path: "POST /v1/videos/generations", tag: "Video", tagClass: "bg-orange-500/10 text-orange-700 ring-orange-500/20" },
-  { icon: Shield, iconClass: "bg-stone-500/10 text-stone-700", path: "GET /healthz / readyz", tag: "Probe", tagClass: "bg-stone-500/10 text-stone-700 ring-stone-500/20" },
+  { icon: Shield, iconClass: "bg-stone-500/10 text-stone-700", path: "GET /healthz / readyz", tag: "Sondă", tagClass: "bg-stone-500/10 text-stone-700 ring-stone-500/20" },
 ] as const
 
 export default function Dashboard() {
@@ -79,11 +79,11 @@ export default function Dashboard() {
     const fetchStatus = async () => {
       try {
         const res = await fetch(`${API_BASE}/api/admin/status`, { headers: getAuthHeader() })
-        if (!res.ok) throw new Error("Unauthorized")
+        if (!res.ok) throw new Error("Neautorizat")
         setStatus(await res.json())
       } catch {
         if (!errOnce) {
-          toast.error("Eroare la obtinerea starii. Verificati cheia de sesiune in Setari sistem.")
+          toast.error("Eroare la obținerea stării. Verificați cheia de sesiune în Setări sistem.")
           setErrOnce(true)
         }
       }
@@ -106,13 +106,13 @@ export default function Dashboard() {
         <div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <div className="text-xs font-black uppercase tracking-[0.28em] text-muted-foreground">Runtime Overview</div>
-            <h2 className="mt-2 text-4xl font-black tracking-tight">Prezentare generala</h2>
+            <h2 className="mt-2 text-4xl font-black tracking-tight">Prezentare generală</h2>
             <p className="mt-2 max-w-3xl text-muted-foreground">
-              Backend Go: HTTP direct, pool conturi, familie de interfete si automatizare browser - actualizare automata la 3 secunde.
+              Backend Go: HTTP direct, pool conturi, familie de interfețe și automatizare browser - actualizare automată la 3 secunde.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Pill tone="dark">Go backend</Pill>
+            <Pill tone="dark">Backend Go</Pill>
             <Pill tone="sage">{requestRuntime?.mode || "direct_http"}</Pill>
             <Pill tone="warm">{browserRuntime?.mode || "playwright"}</Pill>
           </div>
@@ -129,23 +129,23 @@ export default function Dashboard() {
         />
         <StatCard
           icon={<Activity className="size-5" />}
-          title="Concurenta curenta"
+          title="Concurență curentă"
           value={String(acc.in_use ?? 0)}
-          sub={"Global in uz " + String(acc.global_in_use ?? 0)}
+          sub={"Global în uz " + String(acc.global_in_use ?? 0)}
           tone="blue"
         />
         <StatCard
           icon={<ShieldAlert className="size-5" />}
-          title="Cereri in asteptare"
+          title="Cereri în așteptare"
           value={String(acc.waiting ?? 0)}
-          sub={"Limita coada " + String(acc.max_queue_size ?? 0)}
+          sub={"Limită coadă " + String(acc.max_queue_size ?? 0)}
           tone="rose"
         />
         <StatCard
           icon={<ActivityIcon className="size-5" />}
           title="Limitat / Invalid"
           value={String(acc.rate_limited ?? 0) + " / " + String(acc.invalid ?? 0)}
-          sub={"Concurenta/cont " + String(acc.max_inflight_per_account ?? 0)}
+          sub={"Concurență/cont " + String(acc.max_inflight_per_account ?? 0)}
           tone="orange"
         />
       </div>
@@ -153,33 +153,33 @@ export default function Dashboard() {
       <div className="grid gap-4 lg:grid-cols-3">
         <InfoCard
           icon={<Flame className="size-5" />}
-          title="Pool preincalzit Chat_ID"
+          title="Pool preîncălzit Chat_ID"
           value={String(pool?.total_cached ?? 0)}
           description={
             pool
-              ? ("Tinta per cont " + String(pool.target_per_account) + ", TTL " + String(Math.round((pool.ttl_seconds || 0) / 60)) + " minute")
-              : "Poolul de preincalzire nu este activat in backend-ul Go"
+              ? ("Țintă per cont " + String(pool.target_per_account) + ", TTL " + String(Math.round((pool.ttl_seconds || 0) / 60)) + " minute")
+              : "Pool-ul de preîncălzire nu este activat în backend-ul Go"
           }
         />
         <InfoCard
           icon={<GaugeCircle className="size-5" />}
           title="Runtime cereri"
           value={requestRuntime?.mode || "direct_http"}
-          description={requestRuntime?.description || "Cererile obisnuite sunt trimise direct upstream prin HTTP, fara browser."}
+          description={requestRuntime?.description || "Cererea obișnuită este trimisă direct upstream prin HTTP, fără browser."}
         />
         <InfoCard
           icon={<RadioTower className="size-5" />}
           title="Automatizare browser"
           value={browserRuntime?.mode || "playwright"}
-          description={browserRuntime?.description || "Activarea prin email foloseste Playwright; cererile API nu trec prin browser."}
+          description={browserRuntime?.description || "Activarea prin email folosește Playwright; cererile API nu trec prin browser."}
         />
       </div>
 
       {rows.length > 0 && (
         <section className="overflow-hidden rounded-[30px] border border-white/75 bg-card/86 shadow-[var(--shadow-lift)]">
           <div className="flex flex-col gap-1 border-b border-border/50 bg-muted/10 px-6 py-5">
-            <h3 className="text-xl font-black tracking-tight">Detalii concurenta per cont</h3>
-            <p className="text-sm text-muted-foreground">Verificati cererile in tranzit, esecurile si numarul de limitari pentru fiecare cont upstream.</p>
+            <h3 className="text-xl font-black tracking-tight">Detalii concurență per cont</h3>
+            <p className="text-sm text-muted-foreground">Verificați cererile în tranzit, eșecurile și numărul de limitări pentru fiecare cont upstream.</p>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[860px] text-left text-sm">
@@ -187,10 +187,10 @@ export default function Dashboard() {
                 <tr>
                   <th className="px-6 py-3 font-bold">Email</th>
                   <th className="px-4 py-3 font-bold">Stare</th>
-                  <th className="px-4 py-3 text-right font-bold">In tranzit</th>
-                  <th className="px-4 py-3 text-right font-bold">chat_id preincalzit</th>
-                  <th className="px-4 py-3 text-right font-bold">Esecuri cons.</th>
-                  <th className="px-4 py-3 text-right font-bold">Limitari</th>
+                  <th className="px-4 py-3 text-right font-bold">În tranzit</th>
+                  <th className="px-4 py-3 text-right font-bold">Chat_ID preîncălzit</th>
+                  <th className="px-4 py-3 text-right font-bold">Eșecuri cons.</th>
+                  <th className="px-4 py-3 text-right font-bold">Limitări</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/50">
@@ -219,7 +219,7 @@ export default function Dashboard() {
 
       <section className="overflow-hidden rounded-[30px] border border-white/75 bg-card/86 shadow-[var(--shadow-lift)]">
         <div className="border-b border-border/50 bg-muted/10 px-6 py-5">
-          <h3 className="text-xl font-black tracking-tight">Pool interfete API</h3>
+          <h3 className="text-xl font-black tracking-tight">Pool interfețe API</h3>
           <p className="text-sm text-muted-foreground">Punctele de intrare compatibile cu protocoale expuse de router-ul Go curent.</p>
         </div>
         <div className="divide-y divide-border/50">

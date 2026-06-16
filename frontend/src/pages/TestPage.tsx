@@ -16,7 +16,6 @@ import {
   type ModelOption,
 } from "../lib/models"
 
-// 渲染消息内容：自动把 Markdown 图片和图片 URL 渲染成 <img>
 function MessageContent({ content }: { content: string }) {
   type Seg = { start: number; end: number; url: string }
   const segs: Seg[] = []
@@ -40,7 +39,7 @@ function MessageContent({ content }: { content: string }) {
       <div key={"i" + i} className="my-2">
         <img
           src={seg.url}
-          alt="generated"
+          alt="generat"
           className="max-w-full rounded-lg shadow-md border"
           loading="lazy"
           onError={e => { (e.currentTarget as HTMLImageElement).style.display = "none" }}
@@ -243,7 +242,6 @@ export default function TestPage() {
     }
   }, [modelMenuOpen, availableModels.length])
 
-  // 接口测试只展示文本类模型，图片/视频等生成模型分流到独立页面。
   useEffect(() => {
     (async () => {
       try {
@@ -302,7 +300,7 @@ export default function TestPage() {
       enable_thinking: wantsThinking,
     }
     if (!wantsThinking && selectedForcesThinking) {
-      toast.info("该模型为强制思考变体，快速模式不会生效")
+      toast.info("Acest model este o variantă cu gândire forțată; modul rapid nu va avea efect")
     }
     setMessages(prev => [...prev, userMsg])
     setInput("")
@@ -321,7 +319,7 @@ export default function TestPage() {
         } else if (data.choices?.[0]) {
           await appendAssistantTypewriter(normalizeAssistantMessage(data.choices[0].message))
         } else {
-          setMessages(prev => [...prev, { role: "assistant", content: `❌ 未知响应: ${JSON.stringify(data)}`, error: true }])
+          setMessages(prev => [...prev, { role: "assistant", content: `❌ Răspuns necunoscut: ${JSON.stringify(data)}`, error: true }])
         }
       } else {
         const res = await fetch(`${API_BASE}/v1/chat/completions`, {
@@ -336,7 +334,7 @@ export default function TestPage() {
           return
         }
 
-        if (!res.body) throw new Error("No response body")
+        if (!res.body) throw new Error("Corp răspuns absent")
 
         setMessages(prev => [...prev, { role: "assistant", content: "" }])
         const reader = res.body.getReader()
@@ -466,15 +464,15 @@ export default function TestPage() {
         if (!hasContent) {
           setMessages(prev => {
             const msgs = [...prev]
-            msgs[msgs.length - 1] = { role: "assistant", content: "❌ 响应为空（账号可能未激活或无可用账号）", error: true }
+            msgs[msgs.length - 1] = { role: "assistant", content: "❌ Răspuns gol (contul poate fi neactivat sau fără conturi disponibile)", error: true }
             return msgs
           })
         }
       }
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "未知错误"
-      toast.error(`网络错误: ${message}`)
-      setMessages(prev => [...prev, { role: "assistant", content: `❌ 网络错误: ${message}`, error: true }])
+      const message = err instanceof Error ? err.message : "Eroare necunoscută"
+      toast.error(`Eroare rețea: ${message}`)
+      setMessages(prev => [...prev, { role: "assistant", content: `❌ Eroare rețea: ${message}`, error: true }])
     } finally {
       setLoading(false)
     }
@@ -486,8 +484,8 @@ export default function TestPage() {
         <div className="relative z-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <div className="text-xs font-black uppercase tracking-[0.28em] text-muted-foreground">Protocol Trial</div>
-            <h2 className="mt-2 text-4xl font-black tracking-tight">接口测试</h2>
-            <p className="mt-2 text-muted-foreground">测试 OpenAI 对话分发、模型变体、流式输出和思考模式。</p>
+            <h2 className="mt-2 text-4xl font-black tracking-tight">Testare interfață</h2>
+            <p className="mt-2 text-muted-foreground">Testare distribuție conversație OpenAI, variante de model, ieșire în flux și mod gândire.</p>
           </div>
           <div className="flex flex-col gap-3 md:items-end">
             <div className="flex flex-wrap items-center gap-2 text-sm">
@@ -501,7 +499,7 @@ export default function TestPage() {
                   }}
                   className="admin-input flex h-11 w-[22rem] max-w-[calc(100vw-2rem)] shrink-0 items-center gap-2 px-3 text-left"
                 >
-                  <span className="font-medium text-muted-foreground">模型</span>
+                  <span className="font-medium text-muted-foreground">Model</span>
                   <span className="min-w-0 flex-1 truncate font-mono text-sm">{selectedModelLabel}</span>
                   <ChevronDown className={`size-4 shrink-0 text-muted-foreground transition ${modelMenuOpen ? "rotate-180" : ""}`} />
                 </button>
@@ -557,10 +555,10 @@ export default function TestPage() {
                 onClick={() => setStream(!stream)}
               >
                 <input type="checkbox" checked={stream} onChange={() => {}} className="cursor-pointer" />
-                <span className="font-medium">流式传输</span>
+                <span className="font-medium">Transmisie în flux</span>
               </div>
               <Button variant="outline" onClick={() => { setMessages([]); setInput("") }}>
-                <RefreshCw className="mr-2 h-4 w-4" /> 新建对话
+                <RefreshCw className="mr-2 h-4 w-4" /> Conversație nouă
               </Button>
             </div>
           </div>
@@ -575,24 +573,24 @@ export default function TestPage() {
               onClick={() => setAnswerMode("thinking")}
               className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${answerMode === "thinking" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:bg-muted"}`}
             >
-              <Brain className="h-4 w-4" /> 思考
+              <Brain className="h-4 w-4" /> Gândire
             </button>
             <button
               type="button"
               onClick={() => setAnswerMode("fast")}
               className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${answerMode === "fast" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:bg-muted"}`}
             >
-              <Zap className="h-4 w-4" /> 快速
+              <Zap className="h-4 w-4" /> Rapid
             </button>
           </div>
           <p className="text-xs text-muted-foreground">
             {answerMode === "thinking"
-              ? "思考模式会向后端发送 enable_thinking=true，优先展示 reasoning。"
-              : "快速模式会向后端发送 enable_thinking=false，减少思考阶段等待。"}
+              ? "Modul gândire trimite enable_thinking=true către backend, afișând prioritar raționamentul."
+              : "Modul rapid trimite enable_thinking=false către backend, reducând așteptarea în faza de gândire."}
           </p>
         </div>
         {selectedForcesThinking && answerMode === "fast" ? (
-          <p className="mt-2 text-xs text-amber-500">该模型为强制思考变体，快速模式不会覆盖后端强制 thinking。</p>
+          <p className="mt-2 text-xs text-amber-500">Acest model este o variantă cu gândire forțată; modul rapid nu va suprascrie gândirea forțată din backend.</p>
         ) : null}
       </div>
 
@@ -601,7 +599,7 @@ export default function TestPage() {
           {messages.length === 0 && (
             <div className="h-full flex flex-col items-center justify-center text-muted-foreground space-y-4">
               <Bot className="h-12 w-12 text-muted-foreground/30" />
-              <p className="text-sm">发送一条消息以开始测试，系统将通过 /v1/chat/completions 进行调用。</p>
+              <p className="text-sm">Trimiteți un mesaj pentru a începe testarea; sistemul va apela prin /v1/chat/completions.</p>
             </div>
           )}
           {messages.map((msg, i) => (
@@ -614,14 +612,14 @@ export default function TestPage() {
                     : "bg-muted/30 border text-foreground"}`}>
                 {msg.role === "assistant" && !msg.content && !msg.reasoning && loading ? (
                   <span className="animate-pulse flex items-center gap-2 text-muted-foreground">
-                    <Bot className="h-4 w-4" /> 思考中...
+                    <Bot className="h-4 w-4" /> Se gândește...
                   </span>
                 ) : msg.role === "assistant" && !msg.error ? (
                   <div className="space-y-2">
                     {msg.reasoning ? (
                       <details open className="rounded-md border border-dashed border-border/50 bg-muted/20 p-2 text-xs">
                         <summary className="cursor-pointer select-none text-muted-foreground font-mono">
-                          💭 思考过程 ({msg.reasoning.length} 字)
+                          💭 Proces de gândire ({msg.reasoning.length} caractere)
                         </summary>
                         <div className="whitespace-pre-wrap leading-relaxed text-muted-foreground mt-2 pl-2 border-l-2 border-border/30">
                           {msg.reasoning}
@@ -646,7 +644,7 @@ export default function TestPage() {
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === "Enter" && handleSend()}
             className="admin-input flex h-12 w-full px-4 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"
-            placeholder="输入测试消息..."
+            placeholder="Introduceți mesajul de test..."
             disabled={loading}
           />
           <Button onClick={handleSend} disabled={loading || !input.trim()} className="h-12 px-6">
