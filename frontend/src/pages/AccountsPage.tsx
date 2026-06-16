@@ -93,12 +93,12 @@ function statusStyle(code?: string) {
 }
 
 const RATE_LIMIT_LABELS: Record<string, string> = {
-  chat: "Limitare conversație",
-  image: "Limită imagini",
-  video: "Limită video",
+  chat: "Limitare conversatie",
+  image: "Limita imagini",
+  video: "Limita video",
   metadata: "Limitare metadate",
-  unknown: "Limită necunoscută veche",
-  legacy: "Limită veche",
+  unknown: "Limita necunoscuta veche",
+  legacy: "Limita veche",
 }
 
 function activeRateLimits(acc: AccountItem) {
@@ -107,7 +107,7 @@ function activeRateLimits(acc: AccountItem) {
     .filter(([, state]) => Number(state?.until || 0) > now)
     .map(([usage, state]) => ({
       usage,
-      label: RATE_LIMIT_LABELS[usage] || `Limită ${usage}`,
+      label: RATE_LIMIT_LABELS[usage] || `Limita ${usage}`,
       until: Number(state.until || 0),
       error: state.last_error || state.reason || "",
     }))
@@ -115,7 +115,7 @@ function activeRateLimits(acc: AccountItem) {
   if ((acc.rate_limited_until || 0) > now && !items.some(item => item.usage === "chat")) {
     items.push({
       usage: "legacy",
-      label: "Limită veche",
+      label: "Limita veche",
       until: Number(acc.rate_limited_until || 0),
       error: acc.last_error || "",
     })
@@ -149,9 +149,9 @@ function statusText(acc: AccountItem) {
   switch (effectiveStatusCode(acc)) {
     case "valid": return "Normal"
     case "pending_activation": return "Neactivat"
-    case "rate_limited": return hasActiveChatLimit(acc) ? "Limitare conversație" : "Limitat"
+    case "rate_limited": return hasActiveChatLimit(acc) ? "Limitare conversatie" : "Limitat"
     case "banned": return "Suspendat"
-    case "auth_error": return "Autentificare eșuată"
+    case "auth_error": return "Autentificare esuata"
     default: return acc.valid ? "Normal" : "Anormal"
   }
 }
@@ -185,7 +185,7 @@ function failureOf(acc: AccountItem) {
 function recoveryText(acc: AccountItem) {
   const summary = limitSummary(acc)
   if (summary) return summary
-  if (acc.status_code === "rate_limited") return "Așteptare recuperare upstream"
+  if (acc.status_code === "rate_limited") return "Asteptare recuperare upstream"
   return "-"
 }
 
@@ -193,7 +193,7 @@ function maskedToken(token?: string) {
   const value = (token || "").trim()
   if (!value) return "-"
   if (value.length <= 14) return "token-ascuns"
-  return `${value.slice(0, 8)}••••••${value.slice(-6)}`
+  return `${value.slice(0, 8)}......${value.slice(-6)}`
 }
 
 function safeFileName(value: string) {
@@ -201,11 +201,11 @@ function safeFileName(value: string) {
 }
 
 function localizeError(error?: string) {
-  if (!error) return "Eroare necunoscută"
+  if (!error) return "Eroare necunoscuta"
   const lower = error.toLowerCase()
-  if (lower.includes("activation already in progress")) return "Activarea contului este în curs, reîmprospătați mai târziu"
-  if (lower.includes("activation link or token not found")) return "Link-ul de activare sau Token-ul nu a fost găsit"
-  if (lower.includes("token invalid") || lower.includes("token") || lower.includes("auth")) return "Token invalid sau autentificare eșuată"
+  if (lower.includes("activation already in progress")) return "Activarea contului este in curs, reimprospatati mai tarziu"
+  if (lower.includes("activation link or token not found")) return "Link-ul de activare sau Token-ul nu a fost gasit"
+  if (lower.includes("token invalid") || lower.includes("token") || lower.includes("auth")) return "Token invalid sau autentificare esuata"
   return error
 }
 
@@ -381,7 +381,7 @@ export default function AccountsPage() {
 
   const requireSessionKey = () => {
     if (getStoredApiKey()) return true
-    toast.error("Mergeți la „Setări sistem" pentru a lipi ADMIN_KEY sau un API Key existent din data/api_keys.json")
+    toast.error("Mergeti la Setari sistem pentru a lipi ADMIN_KEY sau un API Key existent din data/api_keys.json")
     return false
   }
 
@@ -393,7 +393,7 @@ export default function AccountsPage() {
   const fetchAccounts = (notify = false) => {
     if (!getStoredApiKey()) {
       setAccounts([])
-      toast.error("Mergeți la „Setări sistem" pentru a lipi ADMIN_KEY sau un API Key existent din data/api_keys.json")
+      toast.error("Mergeti la Setari sistem pentru a lipi ADMIN_KEY sau un API Key existent din data/api_keys.json")
       return
     }
     fetch(`${API_BASE}/api/admin/accounts`, { headers: getAuthHeader() })
@@ -402,9 +402,9 @@ export default function AccountsPage() {
         const next = data.accounts || []
         setAccounts(next)
         setSelected(prev => new Set([...prev].filter(email => next.some((acc: AccountItem) => acc.email === email))))
-        if (notify) toast.success("Lista de conturi a fost reîmprospătată")
+        if (notify) toast.success("Lista de conturi a fost reimprospatata")
       })
-      .catch(err => toast.error(err instanceof Error ? err.message : "Reîmprospătarea listei de conturi a eșuat, verificați cheia de sesiune"))
+      .catch(err => toast.error(err instanceof Error ? err.message : "Reimprospatarea listei de conturi a esuat, verificati cheia de sesiune"))
   }
 
   useEffect(() => {
@@ -468,10 +468,10 @@ export default function AccountsPage() {
   const handleAdd = () => {
     if (!requireSessionKey()) return
     if (!token.trim()) {
-      toast.error("Completați mai întâi Token-ul")
+      toast.error("Completati mai intai Token-ul")
       return
     }
-    const id = toast.loading("Se injectează contul...")
+    const id = toast.loading("Se injecteaza contul...")
     fetch(`${API_BASE}/api/admin/accounts`, {
       method: "POST",
       headers: { "Content-Type": "application/json", ...getAuthHeader() },
@@ -483,50 +483,50 @@ export default function AccountsPage() {
     }).then(readAdminJSON)
       .then(data => {
         if (data.ok) {
-          toast.success("Contul a fost adăugat în pool", { id })
+          toast.success("Contul a fost adaugat in pool", { id })
           setEmail("")
           setPassword("")
           setToken("")
           fetchAccounts()
         } else {
-          toast.error(localizeError(data.error) || "Injectarea contului a eșuat", { id, duration: 8000 })
+          toast.error(localizeError(data.error) || "Injectarea contului a esuat", { id, duration: 8000 })
         }
       })
-      .catch(err => toast.error(err instanceof Error ? err.message : "Cererea de injectare a contului a eșuat", { id }))
+      .catch(err => toast.error(err instanceof Error ? err.message : "Cererea de injectare a contului a esuat", { id }))
   }
 
   const handleDelete = (target: AccountItem) => {
     if (!requireSessionKey()) return
     if (target.source === "env") {
-      toast.error("Conturile injectate prin variabile de mediu nu pot fi șterse din panou")
+      toast.error("Conturile injectate prin variabile de mediu nu pot fi sterse din panou")
       return
     }
 
-    const id = toast.loading(`Se șterge ${target.email}...`)
+    const id = toast.loading(`Se sterge ${target.email}...`)
     fetch(`${API_BASE}/api/admin/accounts/${encodeURIComponent(target.email)}`, {
       method: "DELETE",
       headers: getAuthHeader(),
     }).then(async res => {
       if (!res.ok) throw new Error(await adminRequestErrorMessage(res))
-      toast.success(`${target.email} a fost șters`, { id })
+      toast.success(`${target.email} a fost sters`, { id })
       setSelected(prev => {
         const next = new Set(prev)
         next.delete(target.email)
         return next
       })
       fetchAccounts()
-    }).catch(err => toast.error(err instanceof Error ? err.message : "Ștergerea contului a eșuat", { id }))
+    }).catch(err => toast.error(err instanceof Error ? err.message : "Stergerea contului a esuat", { id }))
   }
 
   const handleDeleteSelected = async () => {
     if (!requireSessionKey()) return
     const deletableAccounts = selectedAccounts.filter(acc => acc.source !== "env")
     if (!deletableAccounts.length) {
-      toast.error("Selectați mai întâi conturile")
+      toast.error("Selectati mai intai conturile")
       return
     }
     const skipped = selectedAccounts.length - deletableAccounts.length
-    const id = toast.loading(`Se șterg ${deletableAccounts.length} conturi selectate...`)
+    const id = toast.loading(`Se sterg ${deletableAccounts.length} conturi selectate...`)
     let ok = 0
     let failed = 0
     for (const acc of deletableAccounts) {
@@ -541,7 +541,7 @@ export default function AccountsPage() {
         failed += 1
       }
     }
-    toast.success(`Ștergere completă: reușite ${ok}, eșuate ${failed}${skipped ? `, sărite conturi din variabile de mediu ${skipped}` : ""}`, { id, duration: 8000 })
+    toast.success(`Stergere completa: reusite ${ok}, esuate ${failed}${skipped ? `, sarite conturi din variabile de mediu ${skipped}` : ""}`, { id, duration: 8000 })
     setSelected(new Set())
     fetchAccounts()
   }
@@ -550,10 +550,10 @@ export default function AccountsPage() {
     if (!requireSessionKey()) return
     const abnormal = accounts.filter(acc => acc.status_code !== "valid" && !acc.valid)
     if (!abnormal.length) {
-      toast.success("Nu există conturi anormale de eliminat")
+      toast.success("Nu exista conturi anormale de eliminat")
       return
     }
-    const id = toast.loading(`Se elimină ${abnormal.length} conturi anormale...`)
+    const id = toast.loading(`Se elimina ${abnormal.length} conturi anormale...`)
     let ok = 0
     let failed = 0
     for (const acc of abnormal) {
@@ -568,7 +568,7 @@ export default function AccountsPage() {
         failed += 1
       }
     }
-    toast.success(`Eliminare conturi anormale completă: reușite ${ok}, eșuate ${failed}`, { id, duration: 8000 })
+    toast.success(`Eliminare conturi anormale completa: reusite ${ok}, esuate ${failed}`, { id, duration: 8000 })
     setSelected(new Set())
     fetchAccounts()
   }
@@ -576,50 +576,50 @@ export default function AccountsPage() {
   const handleVerify = (targetEmail: string) => {
     if (!requireSessionKey()) return
     setVerifying(targetEmail)
-    const id = toast.loading(`Se verifică ${targetEmail}...`)
+    const id = toast.loading(`Se verifica ${targetEmail}...`)
     fetch(`${API_BASE}/api/admin/accounts/${encodeURIComponent(targetEmail)}/verify`, {
       method: "POST",
       headers: getAuthHeader(),
     }).then(readAdminJSON)
       .then(data => {
         if (data.valid) {
-          toast.success(`Verificare reușită: ${targetEmail}`, { id })
+          toast.success(`Verificare reusita: ${targetEmail}`, { id })
         } else {
-          toast.error(`Verificare eșuată: ${statusText(data) || localizeError(data.error)}`, { id, duration: 8000 })
+          toast.error(`Verificare esuata: ${statusText(data) || localizeError(data.error)}`, { id, duration: 8000 })
         }
         fetchAccounts()
       })
-      .catch(err => toast.error(err instanceof Error ? err.message : "Cererea de verificare a eșuat", { id }))
+      .catch(err => toast.error(err instanceof Error ? err.message : "Cererea de verificare a esuat", { id }))
       .finally(() => setVerifying(null))
   }
 
   const handleVerifyAll = () => {
     if (!requireSessionKey()) return
     setVerifyingAll(true)
-    const id = toast.loading("Se verifică toate conturile în paralel...")
+    const id = toast.loading("Se verifica toate conturile in paralel...")
     fetch(`${API_BASE}/api/admin/verify`, {
       method: "POST",
       headers: getAuthHeader(),
     }).then(readAdminJSON)
       .then(data => {
         if (data.ok) {
-          toast.success(`Verificare completă, concurență: ${data.concurrency || 1}`, { id })
+          toast.success(`Verificare completa, concurenta: ${data.concurrency || 1}`, { id })
         } else {
-          toast.error("Verificarea completă a eșuat", { id })
+          toast.error("Verificarea completa a esuat", { id })
         }
         fetchAccounts()
       })
-      .catch(err => toast.error(err instanceof Error ? err.message : "Cererea de verificare completă a eșuat", { id }))
+      .catch(err => toast.error(err instanceof Error ? err.message : "Cererea de verificare completa a esuat", { id }))
       .finally(() => setVerifyingAll(false))
   }
 
   const handleVerifySelected = async () => {
     if (!requireSessionKey()) return
     if (!selectedAccounts.length) {
-      toast.error("Selectați mai întâi conturile")
+      toast.error("Selectati mai intai conturile")
       return
     }
-    const id = toast.loading(`Se reîmprospătează informațiile și cota pentru ${selectedAccounts.length} conturi selectate...`)
+    const id = toast.loading(`Se reimprospateaza informatiile si cota pentru ${selectedAccounts.length} conturi selectate...`)
     let ok = 0
     let failed = 0
     for (const acc of selectedAccounts) {
@@ -635,28 +635,28 @@ export default function AccountsPage() {
         failed += 1
       }
     }
-    toast.success(`Reîmprospătare completă: reușite ${ok}, eșuate ${failed}`, { id, duration: 8000 })
+    toast.success(`Reimprospatare completa: reusite ${ok}, esuate ${failed}`, { id, duration: 8000 })
     fetchAccounts()
   }
 
   const handleActivate = (targetEmail: string) => {
     if (!requireSessionKey()) return
-    const id = toast.loading(`Se activează ${targetEmail}...`)
+    const id = toast.loading(`Se activeaza ${targetEmail}...`)
     fetch(`${API_BASE}/api/admin/accounts/${encodeURIComponent(targetEmail)}/activate`, {
       method: "POST",
       headers: getAuthHeader(),
     }).then(readAdminJSON)
       .then(data => {
         if (data.pending) {
-          toast.success(`Contul este în curs de activare, reîmprospătați mai târziu: ${targetEmail}`, { id, duration: 6000 })
+          toast.success(`Contul este in curs de activare, reimprospatati mai tarziu: ${targetEmail}`, { id, duration: 6000 })
         } else if (data.ok) {
-          toast.success(data.message || `Activare reușită: ${targetEmail}`, { id, duration: 6000 })
+          toast.success(data.message || `Activare reusita: ${targetEmail}`, { id, duration: 6000 })
         } else {
-          toast.error(`Activare eșuată: ${localizeError(data.error || data.message)}`, { id, duration: 8000 })
+          toast.error(`Activare esuata: ${localizeError(data.error || data.message)}`, { id, duration: 8000 })
         }
         fetchAccounts()
       })
-      .catch(err => toast.error(err instanceof Error ? err.message : "Cererea de activare a eșuat", { id }))
+      .catch(err => toast.error(err instanceof Error ? err.message : "Cererea de activare a esuat", { id }))
   }
 
   const handleImportFile = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -665,7 +665,7 @@ export default function AccountsPage() {
     if (!files.length) return
     const chunks = await Promise.all(files.map(file => file.text()))
     setBulkText(prev => [prev, ...chunks].filter(Boolean).join("\n"))
-    toast.success(`${files.length} fișiere de import citite`)
+    toast.success(`${files.length} fisiere de import citite`)
   }
 
   const handleBulkImport = async () => {
@@ -676,7 +676,7 @@ export default function AccountsPage() {
       return
     }
     setBulkImporting(true)
-    const id = toast.loading(`Se importă ${candidates.length} conturi...`)
+    const id = toast.loading(`Se importa ${candidates.length} conturi...`)
     let ok = 0
     let failed = 0
     try {
@@ -696,11 +696,11 @@ export default function AccountsPage() {
         if (res.ok && data.ok) ok += 1
         else failed += 1
       }
-      toast.success(`Import conturi complet: reușite ${ok}, eșuate ${failed}`, { id, duration: 8000 })
+      toast.success(`Import conturi complet: reusite ${ok}, esuate ${failed}`, { id, duration: 8000 })
       fetchAccounts()
       if (ok > 0) setBulkText("")
     } catch (err) {
-      toast.error(`Import întrerupt: ${err instanceof Error ? err.message : "Eroare necunoscută"}`, { id })
+      toast.error(`Import intrerupt: ${err instanceof Error ? err.message : "Eroare necunoscuta"}`, { id })
     } finally {
       setBulkImporting(false)
     }
@@ -719,9 +719,9 @@ export default function AccountsPage() {
     if (!requireSessionKey()) return
     const nextEmail = window.prompt("Editare email", acc.email)
     if (nextEmail === null) return
-    const nextPassword = window.prompt("Editare parolă (poate fi lăsată goală)", acc.password || "")
+    const nextPassword = window.prompt("Editare parola (poate fi lasata goala)", acc.password || "")
     if (nextPassword === null) return
-    const nextUsername = window.prompt("Editare nume utilizator (poate fi lăsat gol)", acc.username || "")
+    const nextUsername = window.prompt("Editare nume utilizator (poate fi lasat gol)", acc.username || "")
     if (nextUsername === null) return
     const nextToken = window.prompt("Editare token", acc.token || "")
     if (nextToken === null) return
@@ -729,7 +729,7 @@ export default function AccountsPage() {
       toast.error("Token-ul nu poate fi gol")
       return
     }
-    const id = toast.loading(`Se salvează ${acc.email}...`)
+    const id = toast.loading(`Se salveaza ${acc.email}...`)
     const res = await fetch(`${API_BASE}/api/admin/accounts`, {
       method: "POST",
       headers: { "Content-Type": "application/json", ...getAuthHeader() },
@@ -742,12 +742,12 @@ export default function AccountsPage() {
       }),
     }).catch(() => null)
     if (!res) {
-      toast.error("Cererea de salvare a contului a eșuat", { id })
+      toast.error("Cererea de salvare a contului a esuat", { id })
       return
     }
     const data = await res.json().catch(() => ({}))
     if (!res.ok || !data.ok) {
-      toast.error(localizeError(data.error) || "Salvare eșuată", { id, duration: 8000 })
+      toast.error(localizeError(data.error) || "Salvare esuata", { id, duration: 8000 })
       return
     }
     if ((nextEmail.trim() || acc.email) !== acc.email) {
@@ -763,7 +763,7 @@ export default function AccountsPage() {
   const exportAccounts = (scope: "all" | "selected", format: "json" | "zip") => {
     const list = scope === "selected" ? selectedAccounts : accounts
     if (!list.length) {
-      toast.error(scope === "selected" ? "Selectați mai întâi conturile" : "Nu există conturi de exportat")
+      toast.error(scope === "selected" ? "Selectati mai intai conturile" : "Nu exista conturi de exportat")
       return
     }
     const stamp = new Date().toISOString().replace(/[:.]/g, "-")
@@ -793,10 +793,10 @@ export default function AccountsPage() {
             </div>
             <div className="account-action-row 2xl:justify-end">
             <Button variant="outline" onClick={() => fetchAccounts(true)}>
-              <RefreshCw className="mr-2 h-4 w-4" /> Reîmprospătare
+              <RefreshCw className="mr-2 h-4 w-4" /> Reimprospatare
             </Button>
             <Button variant="outline" onClick={handleVerifyAll} disabled={verifyingAll}>
-              <RotateCw className={`mr-2 h-4 w-4 ${verifyingAll ? "animate-spin" : ""}`} /> Reîmprospătare informații și cotă GPT
+              <RotateCw className={`mr-2 h-4 w-4 ${verifyingAll ? "animate-spin" : ""}`} /> Reimprospatare informatii si cota GPT
             </Button>
             <Button onClick={() => importFileInputRef.current?.click()} className="bg-black text-white hover:bg-black/85">
               <Import className="mr-2 h-4 w-4" /> Import
@@ -809,7 +809,7 @@ export default function AccountsPage() {
             </Button>
             </div>
           </div>
-          <p className="text-muted-foreground">Gestionare unificată a pool-ului de conturi upstream, cu suport pentru injectare manuală, import din fișier, verificare în masă și identificare stare de funcționare.</p>
+          <p className="text-muted-foreground">Gestionare unificata a pool-ului de conturi upstream, cu suport pentru injectare manuala, import din fisier, verificare in masa si identificare stare de functionare.</p>
         </div>
       </section>
 
@@ -819,34 +819,34 @@ export default function AccountsPage() {
         <MetricCard icon={<ShieldAlert className="size-5" />} label="Limitare capacitate" value={stats.rateLimited} tone="orange" />
         <MetricCard icon={<XCircle className="size-5" />} label="Conturi anormale" value={stats.abnormal} tone="rose" />
         <MetricCard icon={<Ban className="size-5" />} label="Conturi suspendate" value={stats.banned} />
-        <MetricCard icon={<RotateCw className="size-5" />} label="Cotă media" value={stats.quota} tone="blue" />
+        <MetricCard icon={<RotateCw className="size-5" />} label="Cota media" value={stats.quota} tone="blue" />
       </div>
       <p className="text-sm text-muted-foreground">
-        Toate conturile valide pot participa la conversații, generare imagini și video; limitele de imagini, video și conversație sunt înregistrate separat per capacitate, fără influență reciprocă. Câmpul cotă media afișează doar datele returnate de upstream; când nu există un câmp dedicat, se afișează 0.
+        Toate conturile valide pot participa la conversatii, generare imagini si video; limitele de imagini, video si conversatie sunt inregistrate separat per capacitate, fara influenta reciproca. Campul cota media afiseaza doar datele returnate de upstream; cand nu exista un camp dedicat, se afiseaza 0.
       </p>
 
       <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
         <div className="rounded-[30px] border border-white/75 bg-card/86 p-6 shadow-[var(--shadow-lift)] space-y-4">
           <div>
-            <h3 className="text-base font-bold">Injectare manuală cont</h3>
-            <p className="text-sm text-muted-foreground">Conectați-vă mai întâi la chat.qwen.ai, apoi apăsați F12 pentru a deschide instrumentele de dezvoltare, găsiți token-ul în Local Storage / Stocare locală și copiați valoarea completă în câmpul de mai jos.</p>
+            <h3 className="text-base font-bold">Injectare manuala cont</h3>
+            <p className="text-sm text-muted-foreground">Conectati-va mai intai la chat.qwen.ai, apoi apasati F12 pentru a deschide instrumentele de dezvoltare, gasiti token-ul in Local Storage / Stocare locala si copiati valoarea completa in campul de mai jos.</p>
             <div className="rounded-xl border border-orange-500/30 bg-orange-500/10 p-3 mt-3">
-              <p className="text-sm font-semibold text-orange-700 dark:text-orange-300">Important: lipiți doar valoarea token din Local Storage / Stocare locală, nu extrageți din cererile Network sau din antetul Authorization.</p>
-              <p className="text-xs text-orange-700/80 dark:text-orange-200/80 mt-1">Nu adăugați prefixul Bearer și nu lipiți întregul text Authorization. Emailul și parola pot fi lăsate goale; sistemul va verifica token-ul înainte de injectare.</p>
+              <p className="text-sm font-semibold text-orange-700 dark:text-orange-300">Important: lipiti doar valoarea token din Local Storage / Stocare locala, nu extrageti din cererile Network sau din antetul Authorization.</p>
+              <p className="text-xs text-orange-700/80 dark:text-orange-200/80 mt-1">Nu adaugati prefixul Bearer si nu lipiti intregul text Authorization. Emailul si parola pot fi lasate goale; sistemul va verifica token-ul inainte de injectare.</p>
             </div>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
             <div className="md:col-span-2">
               <label className="text-xs font-semibold mb-1.5 block">Token (obligatoriu)</label>
-              <input type="text" value={token} onChange={e => setToken(e.target.value)} className="admin-input flex h-10 w-full px-3 py-2 text-sm" placeholder="Lipiți token-ul copiat direct din Local Storage / Stocare locală" />
+              <input type="text" value={token} onChange={e => setToken(e.target.value)} className="admin-input flex h-10 w-full px-3 py-2 text-sm" placeholder="Lipti token-ul copiat direct din Local Storage / Stocare locala" />
             </div>
             <div>
-              <label className="text-xs font-semibold mb-1.5 block">Email (opțional)</label>
-              <input type="text" value={email} onChange={e => setEmail(e.target.value)} className="admin-input flex h-10 w-full px-3 py-2 text-sm" placeholder="Adresă de email" />
+              <label className="text-xs font-semibold mb-1.5 block">Email (optional)</label>
+              <input type="text" value={email} onChange={e => setEmail(e.target.value)} className="admin-input flex h-10 w-full px-3 py-2 text-sm" placeholder="Adresa de email" />
             </div>
             <div>
-              <label className="text-xs font-semibold mb-1.5 block">Parolă (opțional)</label>
-              <input type="text" value={password} onChange={e => setPassword(e.target.value)} className="admin-input flex h-10 w-full px-3 py-2 text-sm" placeholder="Pentru reîmprospătare sau activare automată" />
+              <label className="text-xs font-semibold mb-1.5 block">Parola (optional)</label>
+              <input type="text" value={password} onChange={e => setPassword(e.target.value)} className="admin-input flex h-10 w-full px-3 py-2 text-sm" placeholder="Pentru reimprospatare sau activare automata" />
             </div>
           </div>
           <Button onClick={handleAdd} variant="secondary" className="h-10 w-full font-semibold">
@@ -857,12 +857,12 @@ export default function AccountsPage() {
         <div className="rounded-[30px] border border-white/75 bg-card/86 p-6 shadow-[var(--shadow-lift)] space-y-4">
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
             <div className="min-w-0">
-              <h3 className="text-base font-bold">Import în masă</h3>
-              <p className="text-sm text-muted-foreground">Suportă token-uri pe mai multe linii, format `email,token`, obiecte JSON, array-uri JSON sau stilul webchat2api/CPA cu `accounts/items/data` imbricate.</p>
+              <h3 className="text-base font-bold">Import in masa</h3>
+              <p className="text-sm text-muted-foreground">Suporta token-uri pe mai multe linii, format `email,token`, obiecte JSON, array-uri JSON sau stilul webchat2api/CPA cu `accounts/items/data` imbricate.</p>
             </div>
             <label className="inline-flex h-11 cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-full border bg-background/70 px-4 text-sm font-bold shadow-sm">
               <FileUp className="size-4" />
-              Citire fișier
+              Citire fisier
               <input type="file" accept=".txt,.json,.csv" multiple className="hidden" onChange={handleImportFile} />
             </label>
           </div>
@@ -870,7 +870,7 @@ export default function AccountsPage() {
             value={bulkText}
             onChange={e => setBulkText(e.target.value)}
             className="admin-input min-h-44 w-full resize-y px-4 py-3 text-sm"
-            placeholder={"Un token pe linie, sau lipiți JSON: [{\"email\":\"a@qwen\",\"token\":\"...\"}]"}
+            placeholder={"Un token pe linie, sau lipiti JSON: [{\"email\":\"a@qwen\",\"token\":\"...\"}]"}
             disabled={bulkImporting}
           />
           <div className="flex flex-col gap-3 rounded-2xl border border-white/75 bg-background/55 px-3 py-3 lg:flex-row lg:items-center lg:justify-between">
@@ -894,7 +894,7 @@ export default function AccountsPage() {
         <div className="account-filter-row xl:justify-end">
           <div className="flex h-11 min-w-[260px] items-center gap-2 rounded-2xl border border-white/75 bg-card/80 px-3 shadow-sm">
             <Search className="size-4 text-muted-foreground" />
-            <input value={query} onChange={e => setQuery(e.target.value)} className="min-w-0 flex-1 bg-transparent text-sm outline-none" placeholder="Căutare email" />
+            <input value={query} onChange={e => setQuery(e.target.value)} className="min-w-0 flex-1 bg-transparent text-sm outline-none" placeholder="Cautare email" />
           </div>
           <select value={serviceFilter} onChange={e => setServiceFilter(e.target.value)} className="h-11 rounded-2xl border border-white/75 bg-card/80 px-4 text-sm shadow-sm outline-none">
             <option value="all">Toate serviciile</option>
@@ -905,12 +905,12 @@ export default function AccountsPage() {
             {planOptions.map(item => <option key={item} value={item}>{item}</option>)}
           </select>
           <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="h-11 rounded-2xl border border-white/75 bg-card/80 px-4 text-sm shadow-sm outline-none">
-            <option value="all">Toate stările</option>
+            <option value="all">Toate starile</option>
             <option value="valid">Normal</option>
             <option value="pending_activation">Neactivat</option>
             <option value="rate_limited">Limitat</option>
             <option value="banned">Suspendat</option>
-            <option value="auth_error">Autentificare eșuată</option>
+            <option value="auth_error">Autentificare esuata</option>
           </select>
         </div>
       </div>
@@ -918,15 +918,15 @@ export default function AccountsPage() {
       <div className="overflow-hidden rounded-[30px] border border-white/75 bg-card/86 shadow-[var(--shadow-lift)]">
         <div className="flex flex-col gap-3 border-b border-border/50 px-5 py-4 text-sm xl:flex-row xl:items-center xl:justify-between">
           <Button variant="ghost" size="sm" onClick={handleDeleteAbnormal} disabled={!accounts.some(acc => acc.status_code !== "valid" && !acc.valid)} className="text-rose-600 hover:text-rose-600">
-            <Trash2 className="mr-2 size-4" /> Elimină conturile anormale
+            <Trash2 className="mr-2 size-4" /> Elimina conturile anormale
           </Button>
           <div className="account-selected-action-row xl:justify-end">
             <span className="rounded-full bg-muted px-3 py-1 text-xs font-bold text-muted-foreground">Selectate {selectedAccounts.length}</span>
             <Button variant="ghost" size="sm" onClick={handleVerifySelected} disabled={!selectedAccounts.length}>
-              <RefreshCw className="mr-2 size-4" /> Reîmprospătare informații și cotă GPT selectate
+              <RefreshCw className="mr-2 size-4" /> Reimprospatare informatii si cota GPT selectate
             </Button>
             <Button variant="ghost" size="sm" onClick={handleDeleteSelected} disabled={!selectedAccounts.length} className="text-rose-600 hover:text-rose-600">
-              <Trash2 className="mr-2 size-4" /> Șterge selectate
+              <Trash2 className="mr-2 size-4" /> Sterge selectate
             </Button>
             <Button variant="ghost" size="sm" onClick={() => exportAccounts("selected", "json")} disabled={!selectedAccounts.length}>
               <Download className="mr-2 size-4" /> Export selectate JSON
@@ -948,18 +948,18 @@ export default function AccountsPage() {
                 <th className="px-4 py-4 font-bold">Furnizor</th>
                 <th className="px-4 py-4 font-bold">Plan / Pool</th>
                 <th className="px-4 py-4 font-bold">Stare</th>
-                <th className="px-4 py-4 font-bold">Informații cont</th>
-                <th className="px-4 py-4 font-bold">Cotă media</th>
-                <th className="px-4 py-4 font-bold">Limită / Recuperare</th>
-                <th className="px-4 py-4 text-right font-bold">Reușite</th>
-                <th className="px-4 py-4 text-right font-bold">Eșuate</th>
-                <th className="px-5 py-4 text-right font-bold">Acțiuni</th>
+                <th className="px-4 py-4 font-bold">Informatii cont</th>
+                <th className="px-4 py-4 font-bold">Cota media</th>
+                <th className="px-4 py-4 font-bold">Limita / Recuperare</th>
+                <th className="px-4 py-4 text-right font-bold">Reusite</th>
+                <th className="px-4 py-4 text-right font-bold">Esueate</th>
+                <th className="px-5 py-4 text-right font-bold">Actiuni</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border/50">
               {filteredAccounts.length === 0 && (
                 <tr>
-                  <td colSpan={11} className="px-6 py-12 text-center text-muted-foreground">Niciun cont găsit, ajustați filtrele sau importați un token nou.</td>
+                  <td colSpan={11} className="px-6 py-12 text-center text-muted-foreground">Niciun cont gasit, ajustati filtrele sau importati un token nou.</td>
                 </tr>
               )}
               {filteredAccounts.map(acc => (
@@ -970,7 +970,7 @@ export default function AccountsPage() {
                   <td className="px-4 py-4 align-middle">
                     <div className="flex min-w-0 items-center gap-2">
                       <span className="max-w-[260px] truncate font-mono text-xs text-foreground/80">{maskedToken(acc.token)}</span>
-                      <button type="button" onClick={() => handleCopyToken(acc)} className="rounded-lg p-1 text-muted-foreground hover:bg-muted hover:text-foreground" title="Copiază token">
+                      <button type="button" onClick={() => handleCopyToken(acc)} className="rounded-lg p-1 text-muted-foreground hover:bg-muted hover:text-foreground" title="Copie token">
                         <Clipboard className="size-4" />
                       </button>
                     </div>
@@ -991,12 +991,12 @@ export default function AccountsPage() {
                   <td className="px-4 py-4 align-middle">
                     <div className="max-w-[280px] truncate font-mono text-sm text-foreground/90" title={acc.email}>{acc.email}</div>
                     {acc.source === "env" && (
-                      <div className="mt-1 inline-flex w-fit items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[11px] font-bold text-emerald-700 dark:text-emerald-300" title={acc.env_name || "Variabilă de mediu"}>
-                        <Lock className="size-3" /> Injectat prin variabilă de mediu
+                      <div className="mt-1 inline-flex w-fit items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[11px] font-bold text-emerald-700 dark:text-emerald-300" title={acc.env_name || "Variabila de mediu"}>
+                        <Lock className="size-3" /> Injectat prin variabila de mediu
                       </div>
                     )}
                     <div className="max-w-[280px] truncate text-xs text-muted-foreground" title={statusNote(acc)}>
-                      {acc.username || "Toate conturile valide pot participa la conversații, generare imagini și video."}
+                      {acc.username || "Toate conturile valide pot participa la conversatii, generare imagini si video."}
                     </div>
                   </td>
                   <td className="px-4 py-4 align-middle">
@@ -1020,10 +1020,10 @@ export default function AccountsPage() {
                       <IconButton title="Editare" onClick={() => void handleEditAccount(acc)}>
                         <Edit3 className="size-4" />
                       </IconButton>
-                      <IconButton title="Reîmprospătare / Verificare" onClick={() => handleVerify(acc.email)} disabled={verifying === acc.email}>
+                      <IconButton title="Reimprospatare / Verificare" onClick={() => handleVerify(acc.email)} disabled={verifying === acc.email}>
                         {verifying === acc.email ? <RefreshCw className="size-4 animate-spin" /> : <RotateCw className="size-4" />}
                       </IconButton>
-                      <IconButton title={acc.source === "env" ? "Conturile din variabile de mediu trebuie eliminate din variabilele de mediu" : "Ștergere"} onClick={() => handleDelete(acc)} disabled={acc.source === "env"} danger>
+                      <IconButton title={acc.source === "env" ? "Conturile din variabile de mediu trebuie eliminate din variabilele de mediu" : "Stergere"} onClick={() => handleDelete(acc)} disabled={acc.source === "env"} danger>
                         <Trash2 className="size-4" />
                       </IconButton>
                     </div>

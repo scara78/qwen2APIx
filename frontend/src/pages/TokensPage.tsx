@@ -30,7 +30,7 @@ export default function TokensPage() {
     if (!getStoredApiKey()) {
       setKeys([])
       setLoading(false)
-      toast.error("Mergeți la „Setări sistem" pentru a lipi ADMIN_KEY sau un API Key existent din data/api_keys.json")
+      toast.error("Mergeti la Setari sistem pentru a lipi ADMIN_KEY sau un API Key existent din data/api_keys.json")
       return
     }
     setLoading(true)
@@ -46,7 +46,7 @@ export default function TokensPage() {
         }
         setKeys((data.keys || []).map((key: string) => ({ key, source: "managed", label: "Key creat din panou" })))
       })
-      .catch(err => toast.error(err instanceof Error ? err.message : "Reîmprospătare eșuată, verificați cheia de sesiune"))
+      .catch(err => toast.error(err instanceof Error ? err.message : "Reimprospatare esuata, verificati cheia de sesiune"))
       .finally(() => setLoading(false))
   }, [])
 
@@ -61,7 +61,7 @@ export default function TokensPage() {
   const copyToClipboard = async (text: string) => {
     const value = text.trim()
     if (!value) {
-      toast.error("Nu există conținut de copiat")
+      toast.error("Nu exista continut de copiat")
       return
     }
     try {
@@ -85,25 +85,25 @@ export default function TokensPage() {
           throw new Error("copy failed")
         }
       } catch {
-        toast.error("Copiere eșuată, verificați permisiunile clipboard-ului browserului (mediul HTTP poate fi limitat, folosiți HTTPS sau localhost)")
+        toast.error("Copiere esuata, verificati permisiunile clipboard-ului browserului (mediul HTTP poate fi limitat, folositi HTTPS sau localhost)")
         return
       }
     }
     setCopied(value)
-    toast.success("Copiat în clipboard")
+    toast.success("Copiat in clipboard")
     window.setTimeout(() => setCopied(null), 1800)
   }
 
   const handleCreate = () => {
     if (!getStoredApiKey()) {
-      toast.error("Mergeți la „Setări sistem" pentru a lipi ADMIN_KEY sau un API Key existent")
+      toast.error("Mergeti la Setari sistem pentru a lipi ADMIN_KEY sau un API Key existent")
       return
     }
     if (createMode === "custom" && !customKey.trim()) {
-      toast.error("Introduceți un API Key personalizat")
+      toast.error("Introduceti un API Key personalizat")
       return
     }
-    const id = toast.loading(createMode === "custom" ? "Se adaugă API Key personalizat..." : "Se generează un nou API Key...")
+    const id = toast.loading(createMode === "custom" ? "Se adauga API Key personalizat..." : "Se genereaza un nou API Key...")
     fetch(`${API_BASE}/api/admin/keys`, {
       method: "POST",
       headers: { "Content-Type": "application/json", ...getAuthHeader() },
@@ -114,39 +114,39 @@ export default function TokensPage() {
     }).then(async res => {
       const data = await res.json().catch(() => ({}))
       if (res.ok) {
-        toast.success(createMode === "custom" ? "API Key personalizat adăugat" : "Nou API Key generat și copiat în clipboard", { id })
+        toast.success(createMode === "custom" ? "API Key personalizat adaugat" : "Nou API Key generat si copiat in clipboard", { id })
         if (data.key) void copyToClipboard(data.key)
         setCreateOpen(false)
         setCustomKey("")
         setCreateMode("auto")
         fetchKeys()
       } else {
-        toast.error(data.detail || data.error || "Creare eșuată, verificați permisiunile", { id })
+        toast.error(data.detail || data.error || "Creare esuata, verificati permisiunile", { id })
       }
-    }).catch(() => toast.error("Creare eșuată, verificați permisiunile", { id }))
+    }).catch(() => toast.error("Creare esuata, verificati permisiunile", { id }))
   }
 
   const handleDelete = (item: ApiKeyItem) => {
     if (!getStoredApiKey()) {
-      toast.error("Mergeți la „Setări sistem" pentru a lipi ADMIN_KEY sau un API Key existent")
+      toast.error("Mergeti la Setari sistem pentru a lipi ADMIN_KEY sau un API Key existent")
       return
     }
     if (item.source === "env") {
-      toast.error("Key-urile injectate prin variabile de mediu nu pot fi șterse din panou")
+      toast.error("Key-urile injectate prin variabile de mediu nu pot fi sterse din panou")
       return
     }
-    const id = toast.loading("Se șterge API Key...")
+    const id = toast.loading("Se sterge API Key...")
     fetch(`${API_BASE}/api/admin/keys/${encodeURIComponent(item.key)}`, {
       method: "DELETE",
       headers: getAuthHeader(),
     }).then(async res => {
       if (res.ok) {
-        toast.success("API Key șters", { id })
+        toast.success("API Key sters", { id })
         fetchKeys()
       } else {
         toast.error(await adminRequestErrorMessage(res), { id })
       }
-    }).catch(() => toast.error("Ștergere eșuată", { id }))
+    }).catch(() => toast.error("Stergere esuata", { id }))
   }
 
   return (
@@ -156,14 +156,14 @@ export default function TokensPage() {
         <div className="relative flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
           <div>
             <div className="text-xs font-black uppercase tracking-[0.28em] text-muted-foreground">API Key</div>
-            <h2 className="mt-2 text-4xl font-black tracking-tight">Distribuție API Key</h2>
+            <h2 className="mt-2 text-4xl font-black tracking-tight">Distributie API Key</h2>
             <p className="mt-2 max-w-2xl text-muted-foreground">
-              Gestionare Bearer Key pentru clienții downstream care accesează gateway-ul Go, compatibil cu interfețele OpenAI, Anthropic, Gemini, imagini, video și fișiere.
+              Gestionare Bearer Key pentru clientii downstream care acceseaza gateway-ul Go, compatibil cu interfetele OpenAI, Anthropic, Gemini, imagini, video si fisiere.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Button variant="outline" onClick={() => { fetchKeys(); toast.success("Reîmprospătat") }} disabled={loading}>
-              <RefreshCw className={`mr-2 size-4 ${loading ? "animate-spin" : ""}`} /> Reîmprospătare
+            <Button variant="outline" onClick={() => { fetchKeys(); toast.success("Reimprospatat") }} disabled={loading}>
+              <RefreshCw className={`mr-2 size-4 ${loading ? "animate-spin" : ""}`} /> Reimprospatare
             </Button>
             <Button onClick={() => setCreateOpen(true)}>
               <Plus className="mr-2 size-4" /> Creare Key
@@ -174,7 +174,7 @@ export default function TokensPage() {
 
       <div className="grid gap-4 md:grid-cols-3">
         <div className="rounded-[28px] border border-white/75 bg-card/82 p-5 shadow-[var(--shadow-soft)]">
-          <div className="text-sm text-muted-foreground">Număr Key downstream</div>
+          <div className="text-sm text-muted-foreground">Numar Key downstream</div>
           <div className="mt-3 text-4xl font-black">{keys.length}</div>
         </div>
         <div className="rounded-[28px] border border-white/75 bg-card/82 p-5 shadow-[var(--shadow-soft)]">
@@ -182,7 +182,7 @@ export default function TokensPage() {
           <div className="mt-3 truncate font-mono text-xl font-black">{latestKey ? maskKey(latestKey) : "Negenerat"}</div>
         </div>
         <div className="rounded-[28px] border border-white/75 bg-card/82 p-5 shadow-[var(--shadow-soft)]">
-          <div className="text-sm text-muted-foreground">Metodă autentificare</div>
+          <div className="text-sm text-muted-foreground">Metoda autentificare</div>
           <div className="mt-3 inline-flex items-center gap-2 rounded-full border bg-accent/70 px-3 py-1 text-sm font-bold text-accent-foreground">
             <ShieldCheck className="size-4" />
             Bearer / x-api-key
@@ -194,7 +194,7 @@ export default function TokensPage() {
         <div className="flex items-center justify-between border-b border-border/50 bg-muted/10 px-6 py-5">
           <div>
             <h3 className="text-xl font-black tracking-tight">Lista Key</h3>
-            <p className="text-sm text-muted-foreground">Key-urile sunt afișate mascate implicit; la copiere se scrie valoarea completă; Key-urile din variabile de mediu trebuie eliminate din variabilele de mediu.</p>
+            <p className="text-sm text-muted-foreground">Key-urile sunt afisate mascate implicit; la copiere se scrie valoarea completa; Key-urile din variabile de mediu trebuie eliminate din variabilele de mediu.</p>
           </div>
           <KeyRound className="size-8 text-muted-foreground/30" />
         </div>
@@ -204,7 +204,7 @@ export default function TokensPage() {
               <div>
                 <KeyRound className="mx-auto mb-4 size-12 opacity-30" />
                 <div className="font-semibold text-foreground">Niciun API Key</div>
-                <p className="mt-1 text-sm">Apăsați „Creare Key" pentru a crea credențiale de acces downstream, sau injectați prin variabile de mediu.</p>
+                <p className="mt-1 text-sm">Apasati Creare Key pentru a crea creden?iale de acces downstream, sau injectati prin variabile de mediu.</p>
               </div>
             </div>
           ) : (
@@ -214,16 +214,16 @@ export default function TokensPage() {
                 <div className="min-w-0">
                   <div className="truncate font-mono text-sm font-bold">{maskKey(item.key)}</div>
                   <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                    <span>Key-ul complet nu este afișat în clar, pentru a evita divulgarea accidentală.</span>
+                    <span>Key-ul complet nu este afisat in clar, pentru a evita divulgarea accidentala.</span>
                     <span className={`rounded-full border px-2 py-0.5 font-bold ${item.source === "env" ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300" : "bg-muted text-muted-foreground"}`}>
-                      {item.label || (item.source === "env" ? "Key din variabilă de mediu" : "Key creat din panou")}
+                      {item.label || (item.source === "env" ? "Key din variabila de mediu" : "Key creat din panou")}
                     </span>
                   </div>
                 </div>
                 <div className="flex justify-end gap-2">
                   <Button variant="secondary" size="sm" onClick={() => void copyToClipboard(item.key)}>
                     {copied === item.key ? <Check className="mr-2 size-4 text-emerald-600" /> : <Copy className="mr-2 size-4" />}
-                    Copiază
+                    Copiaza
                   </Button>
                   <Button
                     variant="ghost"
@@ -231,7 +231,7 @@ export default function TokensPage() {
                     onClick={() => handleDelete(item)}
                     disabled={item.source === "env"}
                     className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                    title={item.source === "env" ? "Key-urile din variabile de mediu trebuie eliminate din variabilele de mediu" : "Ștergere"}
+                    title={item.source === "env" ? "Key-urile din variabile de mediu trebuie eliminate din variabilele de mediu" : "Stergere"}
                   >
                     <Trash2 className="size-4" />
                   </Button>
@@ -250,7 +250,7 @@ export default function TokensPage() {
                 <KeyRound className="size-5 text-primary" />
                 <h3 className="text-lg font-black">Creare API Key</h3>
               </div>
-              <Button variant="ghost" size="icon" onClick={() => setCreateOpen(false)} title="Închidere">
+              <Button variant="ghost" size="icon" onClick={() => setCreateOpen(false)} title="Inchidere">
                 <X className="size-4" />
               </Button>
             </div>
@@ -261,7 +261,7 @@ export default function TokensPage() {
                   onClick={() => setCreateMode("auto")}
                   className={`rounded-xl px-3 py-2 text-sm font-bold ${createMode === "auto" ? "bg-background shadow-sm" : "text-muted-foreground"}`}
                 >
-                  Generare automată
+                  Generare automata
                 </button>
                 <button
                   type="button"

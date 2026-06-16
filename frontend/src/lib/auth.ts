@@ -1,9 +1,9 @@
 /**
  * Normalizează credențialele de administrare introduse de utilizator.
  *
- * Browserul nu poate citi direct data/api_keys.json din backend; aici se procesează
- * doar valorile pe care utilizatorul le-a lipit deja în consolă, evitând salvarea
- * intactă a textelor "Bearer xxx", anteturilor Authorization sau fragmentelor JSON.
+ * Browserul nu poate citi direct data/api_keys.json din backend; aici se proceseaza
+ * doar valorile pe care utilizatorul le-a lipit deja in consola, evitand salvarea
+ * intacta a textelor "Bearer xxx", anteturilor Authorization sau fragmentelor JSON.
  */
 export function normalizeApiKey(input: string): string {
   let value = String(input || "").trim()
@@ -21,7 +21,7 @@ export function normalizeApiKey(input: string): string {
       }
     }
   } catch {
-    // Textul key obișnuit nu este JSON, continuă parsarea ca header/text.
+    // Textul key obisnuit nu este JSON, continua parsarea ca header/text.
   }
 
   value = value.replace(/^[\s"'`]+|[\s"'`,]+$/g, "").trim()
@@ -47,7 +47,7 @@ export function getStoredApiKey(): string {
     const stored = localStorage.getItem('qwen2api_key')
     if (stored && stored.trim()) return normalizeApiKey(stored)
   } catch {
-    // localStorage indisponibil → returnează credențial gol, serverul va respinge cererile neautorizate.
+    // localStorage indisponibil -> returneaza credential gol, serverul va respinge cererile neautorizate.
   }
   return normalizeApiKey((import.meta.env.VITE_DEFAULT_ADMIN_KEY as string | undefined) || '')
 }
@@ -75,15 +75,15 @@ export async function adminRequestErrorMessage(res: Response): Promise<string> {
     const data = await res.clone().json()
     detail = String(data.detail || data.error || data.message || "").trim()
   } catch {
-    // Răspuns de eroare non-JSON; se bazează doar pe starea HTTP.
+    // Raspuns de eroare non-JSON; se bazeaza doar pe starea HTTP.
   }
 
   if (res.status === 401) {
-    return "Fără Key de sesiune: mergeți la „Setări sistem" pentru a lipi ADMIN_KEY sau un API Key din data/api_keys.json"
+    return "Fara Key de sesiune: mergeti la Setari sistem pentru a lipi ADMIN_KEY sau un API Key din data/api_keys.json"
   }
   if (res.status === 403) {
-    return "Key de sesiune neconformă: confirmați că ați lipit key-ul complet din data/api_keys.json, fără prefixul Bearer"
+    return "Key de sesiune neconforma: confirmati ca ati lipit key-ul complet din data/api_keys.json, fara prefixul Bearer"
   }
   if (detail) return detail
-  return `Cerere eșuată (HTTP ${res.status})`
+  return `Cerere esuata (HTTP ${res.status})`
 }
